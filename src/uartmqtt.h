@@ -10,6 +10,7 @@ Copyright (C) 2019 by Shaeed Khan
 #define UARTMQTT_H
 
 #include "mqtt.h"
+#include <string.h>
 
 #ifndef UART_MQTT_USE_SOFT
 #define UART_MQTT_USE_SOFT          0           // Use SoftwareSerial
@@ -35,7 +36,7 @@ Copyright (C) 2019 by Shaeed Khan
 #define UART_MQTT_TERMINATION      '\n'         // Termination character
 #endif
 
-#define UART_MQTT_BUFFER_SIZE       100         // UART buffer size
+#define UART_MQTT_BUFFER_SIZE       200         // UART buffer size
 
 // Internal MQTT events
 #ifndef MQTT_CONNECT_EVENT
@@ -51,9 +52,14 @@ Copyright (C) 2019 by Shaeed Khan
 #endif
 
 void _uartmqttReceiveUART();
-void _uartmqttSendMQTT();
-void _uartmqttSendUART(const char * message);
+void _sendOnMqtt(const char * data);
+void _sendOnUart(const char * message);
 void _uartmqttLoop();
 void uartmqttSetup();
+//char * _toCharArray(String str);
+void _sendMqttStatusToBluePill();
+void _sendMqttStatusToBluePill(bool status);
+void _settingsGet(char * data);
+//void _settingsSet(char * data);
 
 #endif

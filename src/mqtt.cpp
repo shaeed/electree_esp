@@ -18,7 +18,7 @@ bool _mqtt_connecting = false;
 unsigned char _mqtt_qos = MQTT_QOS;
 bool _mqtt_retain = MQTT_RETAIN;
 unsigned long _mqtt_keepalive = MQTT_KEEPALIVE;
-String _mqtt_topic;
+String _mqtt_topic_base;
 String _mqtt_topic_json;
 String _mqtt_setter;
 String _mqtt_getter;
@@ -125,12 +125,12 @@ void _mqttPlaceholders(String *text) {
 
 void _mqttConfigure() {
     // Get base topic
-    _mqtt_topic = getSetting("mqttTopic", MQTT_TOPIC);
-    if (_mqtt_topic.endsWith("/")) _mqtt_topic.remove(_mqtt_topic.length()-1);
+    _mqtt_topic_base = getSetting("mqttTopic", MQTT_TOPIC);
+    if (_mqtt_topic_base.endsWith("/")) _mqtt_topic_base.remove(_mqtt_topic_base.length()-1);
 
     // Placeholders
-    _mqttPlaceholders(&_mqtt_topic);
-    if (_mqtt_topic.indexOf("#") == -1) _mqtt_topic = _mqtt_topic + "/#";
+    _mqttPlaceholders(&_mqtt_topic_base);
+    if (_mqtt_topic_base.indexOf("#") == -1) _mqtt_topic_base = _mqtt_topic_base + "/#";
 
     // Getters and setters
     _mqtt_setter = getSetting("mqttSetter", MQTT_SETTER);
@@ -277,7 +277,7 @@ bool isMqttConnected(){
     @return String object with the magnitude part.
 */
 String mqttMagnitude(char * topic) {
-    String pattern = _mqtt_topic + _mqtt_setter;
+    String pattern = _mqtt_topic_base + _mqtt_setter;
     int position = pattern.indexOf("#");
     if (position == -1) return String();
     String start = pattern.substring(0, position);
@@ -303,7 +303,7 @@ String mqttMagnitude(char * topic) {
     @return String full MQTT topic.
 */
 String mqttTopic(const char * magnitude, bool is_set) {
-    String output = _mqtt_topic;
+    String output = _mqtt_topic_base;
     output.replace("#", magnitude);
     output += is_set ? _mqtt_setter : _mqtt_getter;
     return output;
